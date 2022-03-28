@@ -1,0 +1,32 @@
+int echo_pin= 10; //초음파센서 에코 핀을 12번에 연결
+int trig_pin= 11; //초음파센서 트리거 핀을 11번에 연결
+int led= 12;       //LED를 12번 핀에 연결
+int buzzer= 5;     //부저를 5번 핀에 연결
+void setup() 
+{                        // 시작
+Serial.begin(9600);        //9600보드레이트 속도로 시리얼 통신 시작
+pinMode(echo_pin,INPUT); //인풋 즉 투입으로 에코핀 사용
+pinMode(trig_pin,OUTPUT); //아웃풋 즉 결과 값으로 트리거핀 사용
+pinMode(buzzer,OUTPUT);   //부저를 아웃풋 즉 결과값으로 나타냄
+}
+void loop() {
+                            float duration, distance ;
+                            digitalWrite(trig_pin,HIGH); //트리거핀 킴
+                            delay(10);//trigger핀이 10milliseconds동안 발사됨
+                            digitalWrite(trig_pin,LOW); //트리거 핀 끔
+                            duration = pulseIn( echo_pin,HIGH);//duration값을 가지고 옴(에코핀 켜진 상태)
+                             distance = (float(duration/2) / 29.1);// 나누기 2를 하는 이유는 왕복을 하기 때문이고, 2.91은 초음파가 초속 340m이기에 초당 29.1을 이동하기 때문이다
+         Serial.print(distance); //거리 나타냄
+         Serial.println("mm"); //mm단위로 센서 값 나타냄(줄마다)
+         delay(3);
+
+if((distance)<500)             //초음파센서값이 500일 떄의 기준으로의 if문장
+{ digitalWrite(led,HIGH); }   //초음파센서값이 500보다 작을 때 led 켜짐
+{ digitalWrite(buzzer,HIGH); } //초음파센서값이 500보다 작을 때 부저 소리 남
+else 
+{ digitalWrite(led,LOW); }   //초음파센서값이 500보다 클 때 led 꺼짐
+{ digitalWrite(buzzer,LOW); }  //초음파센서값이 500보다 클 때 부저 꺼짐
+                         
+// pulsIn함수는 pulsIn(핀번호, 핀상태)의 형태로 이루어져 있으며 핀 상태가 바뀌면 
+//그때까지 경과한 시간을 ms(마이크로 세컨드)단위로 반환시켜줍니다.
+
