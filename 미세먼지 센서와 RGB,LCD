@@ -1,0 +1,61 @@
+#include <PMsensor.h>          //미세먼지 센서 헤더파일
+#include <Wire.h> 
+#include <LiquidCrystal_I2C.h>   //lcd 헤더파일
+
+PMsensor PM;
+LiquidCrystal_I2C lcd(0x27,16,2);  // 0x27=lcd 주소, 16=>줄 당 글자 수, 2=>2줄
+
+  int redPin = 3;    //RGB의 빨강색 led데이터를 3번 포트에 연결 (가장 긴 것의 왼쪽)
+  int greenPin = 9   //RGB의 초록색 led데이터를 9 포트에 연결 (가장 긴 것의 왼쪽)
+  int bluePin = 5;      //RGB의 파란색 led데이터를 5번 포트에 연결 (가장 긴 것의 왼쪽)
+
+void setup() {
+  lcd.init();                      // lcd 초기화
+  lcd.backlight();                   // lcd 백라이트 켜기
+  Serial.begin(9600);                //시리얼 시작
+  pinMode(redPin, OUTPUT);          //빨강핀을 결과로 사용하겠다
+  pinMode(greenPin, OUTPUT);        //초록핀을 결과로 사용하겠다    
+  pinMode(bluePin, OUTPUT);         //파랑핀을 결과로 사용하겠다
+
+  /////(infrared LED pin, sensor pin)  /////적외선 센서, 미세먼지 센서 핀
+  PM.init(2, A0);                             //적외선 센서 데이터값을 2번 포트로 받겠다, 미세먼지 센서 핀을 A0로 받겠다
+}
+
+void loop() {
+  Serial.println("=================================");         // 시리얼에 ================================= 표기
+  Serial.println("Read PM2.5");                                  //pm 2.5 먼지크기가 2.5micro 크기
+
+  float filter_Data = PM.read(0.1);         
+  //float=실수, filter 값은 새로운 센서 값(nofilter 값)에 0.1을 곱한 값과 세롭게 받아들인 nofilter 값 이전의 nofilter 값에 0.9를 곱하여 둘의 값을 더한 것이다(숫자 0.1을 바꿔서 정확성을 높이거나 줄일 수 있다)
+  float noFilter_Data = PM.read();
+//nofilter 값은 pm센서(미세먼지 센서)의 값을 읽은 것이다
+  Serial.print("Filter : ");         //시리얼에 "Filter : "입력
+  Serial.println(filter_Data);        //시리얼에 필터 값 입력
+  Serial.print("noFilter : ");           //시리얼에 "noFilter : "입력
+  Serial.println(noFilter_Data);         //시리얼에 noFilter_Data값 입력
+
+ lcd.setCursor(2,0);                        //LCD 좌표 (2,0)에 
+ lcd.print("filter:");                     //"filter:" 입력
+  lcd.setCursor(10,0);                       //LCD 좌표 (10,0)에
+  lcd.print(filter_Data);                    //filter_Data값 입력
+   lcd.setCursor(0,1);                           //LCD 좌표 (0,1)에
+  lcd.print("nofilter:");                              //"nofilter:" 입력
+  lcd.setCursor(10,1);                                //LCD 좌표 (10,1)에
+  lcd.print(noFilter_Data);                               //noFilter_Data값 입력
+
+ if (filter_Data<=30)                                     //만약 필터 값이 30이하일 때 
+  { setColor(0,0,255); delay(100);}                         //파란색 LED
+  if  (filter_Data<=80 && filter_Data>30 )                  
+  //만약 필터 값이 30초과 80 이하일 때(처음에는 30<filter_Data<=80 이라고 조건문을 적었지만 파란색과 초록색이 복합적으로 나오기에 의문이 들었다. 그러던 중 정보 시간에 배운 "논리 연산자" 개념을 활용하여 &&를 사용하여 문제를 해결하였다
+  { setColor(0,255,0); delay(100);}               //초록색 LED
+  if  (filter_Data>80)                    //만약 필터 값이 80초과일 때
+  { setColor(255,0,0);  delay(100);}          //빨간색 LED
+  
+  delay(1000);
+}
+void setColor(int red, int green, int blue)
+     {
+       analogWrite(redPin, red);
+       analogWrite(greenPin, green);
+       analogWrite(bluePin, blue); 
+     }
