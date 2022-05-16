@@ -53,9 +53,9 @@ void loop() {
   
   delay(1000);                                   //1000 microsecond 딜레이
 }
-void setColor(int red, int green, int blue)     //set color 함수 지정
+void setColor(int red, int green, int blue)     //set color 함수 지정(RGB led는0과 1즉 켰다 껐다 하는 디지털 신호가 아닌 아날로그 신호를 활용하여, 빛의 세기를 조종할 수 있다.)
      {
-       analogWrite(redPin, red);
-       analogWrite(greenPin, green);
-       analogWrite(bluePin, blue); 
+       analogWrite(redPin, red);               //redPin의 값을 red값으로
+       analogWrite(greenPin, green);           //greenPin의 값을 green값으로
+       analogWrite(bluePin, blue);             //bluePin의 값을 blue값으로
      }
