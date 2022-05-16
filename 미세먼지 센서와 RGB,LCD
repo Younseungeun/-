@@ -1,5 +1,5 @@
 #include <PMsensor.h>          //미세먼지 센서 헤더파일
-#include <Wire.h> 
+#include <Wire.h>              
 #include <LiquidCrystal_I2C.h>   //lcd 헤더파일
 
 PMsensor PM;
@@ -51,9 +51,9 @@ void loop() {
   if  (filter_Data>80)                    //만약 필터 값이 80초과일 때
   { setColor(255,0,0);  delay(100);}          //빨간색 LED
   
-  delay(1000);
+  delay(1000);                                   //1000 microsecond 딜레이
 }
-void setColor(int red, int green, int blue)
+void setColor(int red, int green, int blue)     //set color 함수 지정
      {
        analogWrite(redPin, red);
        analogWrite(greenPin, green);
