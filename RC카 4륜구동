@@ -1,0 +1,25 @@
+int motor1PinA  = 2 ;
+int motor1PinB =3 ;
+int enablelPin=  11 ; //left 왼쪽 
+int motor2PinA  = 4 ;
+int motor2PinB =5;
+int enableRPin=  10 ; //RIGHT 오른쪽
+
+
+  void setup() {
+     pinMode(motor1PinA, OUTPUT);     
+     pinMode(motor1PinB, OUTPUT);
+     pinMode(enablelPin, OUTPUT);
+      pinMode(motor2PinA, OUTPUT);     
+     pinMode(motor2PinB, OUTPUT);
+     pinMode(enableRPin, OUTPUT);
+     analogWrite(enablelPin, 255);//모터속도를 정해준다(255가 최대)
+     analogWrite(enableRPin, 255);//모터속도를 정해준다(255가 최대)
+  }
+   void loop() {                                          
+     digitalWrite(motor1PinA, HIGH);                                                                                                     
+     digitalWrite(motor1PinB, LOW);  
+      digitalWrite(motor2PinA, HIGH);                                                                                                     
+     digitalWrite(motor2PinB, LOW);                                                                                                                                                     
+     delay(1000);                                                                                                                                                                                                                                         
+     }                            
