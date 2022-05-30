@@ -1,0 +1,139 @@
+#include <SoftwareSerial.h> //헤더파일, 다운로드 받아야 하지만 블루투스 센서에 설치되어 있어서 굳이 깔 필요는 없다.
+SoftwareSerial BTSerial(12, 13);   //12-TX    중요 BTSerial의 TX는 Serial의 RX와 연결, BTSerial의 RX는 Serial의 TX와 연결 (RX의 R은 receive,TX의 T는 transmit)
+int motor1PinA  = 2 ;              //2번 핀에 연결
+int motor1PinB =3 ;                 //3번 핀에 연결
+int enableRPin=  11 ; // RIGHT 오른쪽   //motor1Pin은 오른쪽에 있는 모터이다
+int motor2PinA  = 4 ;                 //4번 핀에 연결
+int motor2PinB =5;                    //5번 핀에 연결
+int enableLPin=  10 ; //left 왼쪽        //motor2Pin은 왼쪽에 있는 모터이다
+char in;                                 //변수 지정
+void setup() {   
+     pinMode(motor1PinA, OUTPUT);     //motor1PinA를 아웃풋으로 사용(결과)
+     pinMode(motor1PinB, OUTPUT);     //motor1PinB를 아웃풋으로 사용(결과)
+     pinMode(enableLPin, OUTPUT);     //enableLPin를 아웃풋으로 사용(결과)
+      pinMode(motor2PinA, OUTPUT);    //motor2PinA를 아웃풋으로 사용(결과)
+     pinMode(motor2PinB, OUTPUT);     //motor2PinB를 아웃풋으로 사용(결과)
+    pinMode(enableRPin, OUTPUT ;      //enableRPin를 아웃풋으로 사용(결과)
+     analogWrite(enableRPin, 100);//모터속도를 정해준다
+     analogWrite(enableLPin, 100);//모터속도를 정해준다
+  Serial.begin(9600);
+  BTSerial.begin(9600); //블루투스 데이터 전송속도 초기화
+}
+void loop() {
+  if (BTSerial.available()) //블루투스를 통해 데이터가 수신된다면
+    Serial.write(BTSerial.read()); //블루투스에서 시리얼포트의 RX핀으로 데이터 전송, 받은 데이터 PC 시리얼 창에 출력
+                                           
+  if (Serial.available())//시리얼모니터 창에 들어온 데이터 입력 후 전송을 하면 
+     BTSerial.write(Serial.read());//블루투스를 통해 전송된 데이터 스마트폰에 출력
+ if (BTSerial.available())
+          { in =BTSerial.read();
+            Serial.write(in);
+         }
+         if (Serial.available()) 
+          {  BTSerial.write(Serial.read());
+             Serial.print("data =");
+           Serial.println(in);
+          }
+    
+    switch(in){
+               case 'F':Forward(); break;
+               case 'R': Right(); break; 
+               case 'S': Stop(); break;
+               case 'L': Left(); break;
+               case 'B': Back(); break;
+               case 'G': FowardLeft(); break;
+               case 'I': FowardRight(); break;
+                case 'H': BackLeft(); break;
+                 case 'J':BackRight();break;
+             } 
+      }  
+void Forward(){  
+    //  앞
+       analogWrite(enableRPin, 255);
+    analogWrite(enableLPin, 255);
+    digitalWrite(motor1PinA, HIGH);
+       digitalWrite(motor1PinB,LOW);
+      digitalWrite(motor2PinA,HIGH);
+       digitalWrite(motor2PinB,LOW);
+       
+}
+void Right(){  
+    //  오른쪽
+       analogWrite(enableRPin, 255);
+    analogWrite(enableLPin, 255);
+    digitalWrite(motor1PinA, LOW);
+       digitalWrite(motor1PinB,LOW);
+       digitalWrite(motor2PinA,HIGH);
+       digitalWrite(motor2PinB,LOW);
+     
+}
+void Left(){  
+    //  왼쪽
+       analogWrite(enableRPin, 255);
+    analogWrite(enableLPin, 255);
+    digitalWrite(motor1PinA, HIGH);
+       digitalWrite(motor1PinB,LOW);
+       digitalWrite(motor2PinA,LOW);
+       digitalWrite(motor2PinB,LOW);
+      
+}
+void Stop(){  
+    //  정지
+        analogWrite(enableRPin, 255);
+    analogWrite(enableLPin, 255);
+    digitalWrite(motor1PinA, LOW);
+       digitalWrite(motor1PinB,LOW);
+       digitalWrite(motor2PinA,LOW);
+       digitalWrite(motor2PinB,LOW);
+       
+}
+void Back(){  
+    //  후진
+     analogWrite(enableRPin, 255);
+    analogWrite(enableLPin, 255);
+    digitalWrite(motor1PinA, LOW);
+       digitalWrite(motor1PinB,HIGH);
+        digitalWrite(motor2PinA,LOW);
+       digitalWrite(motor2PinB,HIGH);
+       
+}
+void FowardRight(){  
+    //  오45
+     analogWrite(enableRPin,100);
+    analogWrite(enableLPin, 255);
+     digitalWrite(motor1PinA, HIGH);
+       digitalWrite(motor1PinB,LOW);
+       digitalWrite(motor2PinA,HIGH);
+       digitalWrite(motor2PinB,LOW);
+    
+}
+void FowardLeft(){  
+    //  왼45
+    analogWrite(enableRPin, 255);
+    analogWrite(enableLPin, 100);
+    digitalWrite(motor1PinA, HIGH);
+       digitalWrite(motor1PinB,LOW);
+          digitalWrite(motor2PinA,HIGH);
+       digitalWrite(motor2PinB,LOW);
+    
+}
+void BackLeft(){
+    // 뒤왼45
+ analogWrite(enableRPin, 255);
+    analogWrite(enableLPin, 100);
+    digitalWrite(motor1PinA,LOW);
+       digitalWrite(motor1PinB,HIGH);
+       digitalWrite(motor2PinA,LOW);
+       digitalWrite(motor2PinB,HIGH);
+       
+}
+void BackRight(){
+    // 뒤오45
+    analogWrite(enableRPin,100);
+    analogWrite(enableLPin, 255);
+    digitalWrite(motor1PinA,LOW);
+       digitalWrite(motor1PinB,HIGH);    
+      digitalWrite(motor2PinA,LOW);
+       digitalWrite(motor2PinB,HIGH);
+       
+}
